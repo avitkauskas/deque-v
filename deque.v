@@ -1,5 +1,6 @@
 module dq
 
+const default_size = 64
 const max_str_elements = 20
 
 struct Deque[T] {
@@ -18,7 +19,7 @@ enum Scale {
 @[params]
 pub struct DequeParams {
 pub:
-	min int = 64
+	min int = dq.default_size
 }
 
 pub fn deque[T](params DequeParams) Deque[T] {
@@ -141,14 +142,14 @@ pub fn (q &Deque[T]) str() string {
 	if q.n <= dq.max_str_elements + 5 {
 		return q.array().str()
 	}
+	mut head := []T{}
+	mut tail := []T{}
 	len := dq.max_str_elements / 2
-	mut head := []T{len: len}
-	mut tail := []T{len: len}
 	for i := 0; i < len; i++ {
-		head[i] = q.data[(q.j + i) % q.data.len]
+		head << q.data[(q.j + i) % q.data.len]
 	}
 	for i := q.n - len; i < q.n; i++ {
-		tail[i] = q.data[(q.j + i) % q.data.len]
+		tail << q.data[(q.j + i) % q.data.len]
 	}
 	head_str := head.str()
 	tail_str := tail.str()
@@ -190,7 +191,7 @@ fn (mut q Deque[T]) resize[T](scale Scale) {
 		vmemcpy(&a[0], &q.data[q.j], isize(len1) * q.data.element_size)
 		vmemcpy(&a[len1], &q.data[0], isize(len2) * q.data.element_size)
 	}
-	// unsafe block above does the following:
+	// unsafe block above does the same but a bit more efficient:
 	// for i := 0; i < q.n; i++ {
 	// 	a[i] = q.data[(q.j + i) % q.data.len]
 	// }
