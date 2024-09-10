@@ -1,7 +1,6 @@
 # Binaries for programs and plugins
 full
-main
-dq
+rand
 *.exe
 *.exe~
 *.so
