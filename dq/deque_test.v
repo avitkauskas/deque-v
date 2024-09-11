@@ -208,6 +208,22 @@ fn test_get_and_set() {
 	assert q.data[0] == 3
 }
 
+fn test_append() {
+	mut q := deque[int](min: 4)
+	q.append([1, 2, 3])
+	assert q.data == [1, 2, 3, 0]
+	assert q.head == 0
+	assert q.tail == 3
+}
+
+fn test_prepend() {
+	mut q := deque[int](min: 4)
+	q.prepend([1, 2, 3])
+	assert q.data == [0, 1, 2, 3]
+	assert q.head == 1
+	assert q.tail == 0
+}
+
 fn test_array() {
 	mut q := deque[int](min: 8)
 	assert q.array() == []
@@ -225,5 +241,5 @@ fn test_str() {
 	assert q.str() == '[0, 1, 2, 3, 4, 5]'
 	q.data = []int{len: 32, init: index}
 	q.tail = 26
-	assert q.str() == '[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, ...,\n16, 17, 18, 19, 20, 21, 22, 23, 24, 25]'
+	assert q.str() == '[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,\n... 6 other elements ...,\n16, 17, 18, 19, 20, 21, 22, 23, 24, 25]'
 }

@@ -103,6 +103,19 @@ pub fn (mut q Deque[T]) push(x T) {
 	q.push_back(x)
 }
 
+pub fn (mut q Deque[T]) append(a []T) {
+	for e in a {
+		q.push_back(e)
+	}
+}
+
+@[direct_array_access]
+pub fn (mut q Deque[T]) prepend(a []T) {
+	for i := a.len - 1; i >= 0; i-- {
+		q.push_front(a[i])
+	}
+}
+
 @[direct_array_access]
 pub fn (mut q Deque[T]) pop_front() ?T {
 	if q.head == q.tail {
@@ -143,6 +156,10 @@ pub fn (q &Deque[T]) front() ?T {
 		return none
 	}
 	return q.data[q.head]
+}
+
+pub fn (q &Deque[T]) peek() ?T {
+	return q.front()
 }
 
 @[direct_array_access]
