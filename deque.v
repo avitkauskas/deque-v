@@ -187,19 +187,21 @@ pub fn (mut q Deque[T]) set(i int, x T) ! {
 }
 
 pub fn (mut q Deque[T]) shrink() {
+	if q.data.len <= q.min {
+		return
+	}
 	q_len := q.len()
-	mut new_cap := 1
+	mut new_cap := q.min
 	for new_cap < q_len {
 		new_cap *= 2
 	}
 
 	mut new_arr := []T{len: new_cap}
 
-	deque_len := q.len()
 	mut tail_len := q.tail
 	mut head_len := q.data.len - q.head
-	if head_len > deque_len {
-		head_len = deque_len
+	if head_len > q_len {
+		head_len = q_len
 		tail_len = 0
 	}
 
@@ -210,9 +212,9 @@ pub fn (mut q Deque[T]) shrink() {
 		new_arr[head_len + i] = q.data[i]
 	}
 
-	q.data = new_arr
 	q.head = 0
-	q.tail = deque_len
+	q.tail = q_len
+	q.data = new_arr
 }
 
 @[direct_array_access]
@@ -225,6 +227,7 @@ pub fn (q &Deque[T]) array() []T {
 	return a
 }
 
+@[direct_array_access]
 pub fn (q &Deque[T]) str() string {
 	q_len := q.len()
 	if q_len <= dq.max_str_elements + 5 {
@@ -237,7 +240,7 @@ pub fn (q &Deque[T]) str() string {
 		head[i] = q.data[(q.head + i) & (q.data.len - 1)]
 	}
 	for i in 0 .. len {
-		tail[i] = q.data[(q.head + q_len - len + i) & (q.data.len - 1)]
+		tail[i] = q.data[(q.tail - len + i) & (q.data.len - 1)]
 	}
 	head_str := head.str()
 	tail_str := tail.str()

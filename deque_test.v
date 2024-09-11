@@ -229,9 +229,19 @@ fn test_shrink() {
 	q.head = 100
 	q.tail = 200
 	q.shrink()
-	assert q.data.len == 128
+	assert q.data.len == 256
+	assert q.head == 100
+	assert q.tail == 200
+
+	q = deque[int](min: 8)
+	q.data = [0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	assert q.data.len == 16
+	q.head = 2
+	q.tail = 4
+	q.shrink()
+	assert q.data.len == 8
 	assert q.head == 0
-	assert q.tail == 100
+	assert q.tail == 2
 }
 
 fn test_array() {
