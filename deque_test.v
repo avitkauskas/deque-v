@@ -224,6 +224,16 @@ fn test_prepend() {
 	assert q.tail == 0
 }
 
+fn test_shrink() {
+	mut q := deque[int](min: 256)
+	q.head = 100
+	q.tail = 200
+	q.shrink()
+	assert q.data.len == 128
+	assert q.head == 0
+	assert q.tail == 100
+}
+
 fn test_array() {
 	mut q := deque[int](min: 8)
 	assert q.array() == []
