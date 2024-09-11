@@ -1,6 +1,6 @@
 Module {
 	name: 'dq'
-	description: 'Pragmatically optimized double ended queue (deque) for V'
+	description: 'Quick double ended queue (deque) for V'
 	version: '0.1.0'
 	license: 'MIT'
 	dependencies: []

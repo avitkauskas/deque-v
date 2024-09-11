@@ -11,10 +11,11 @@ import dq
 // mut q := dq.deque[int](shrink: false)
 mut q := dq.deque[int]()
 
-num := 1_000_000_000
+// num := 1_000_000_000
+num := 1_000_000
 max := if q.max_len() != -1 { q.max_len() } else { num }
 
-for _ in 0 .. 2 {
+for _ in 0 .. 1000 {
 	for i in 0 .. num {
 		q.push_back(i)
 	}

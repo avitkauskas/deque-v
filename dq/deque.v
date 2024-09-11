@@ -28,7 +28,10 @@ pub:
 }
 
 pub fn deque[T](params DequeParams) Deque[T] {
-	par_min := if params.min > dq.max_deque_size { dq.max_deque_size } else { params.min }
+	mut par_min := if params.min > dq.max_deque_size { dq.max_deque_size } else { params.min }
+	if par_min <= 0 {
+		par_min = dq.default_deque_size
+	}
 	mut cap := 1
 	for cap < par_min {
 		cap *= 2
@@ -166,32 +169,34 @@ pub fn (mut q Deque[T]) set(i int, x T) ! {
 	q.data[(q.head + i) & (q.data.len - 1)] = x
 }
 
-// @[direct_array_access]
-// pub fn (q &Deque[T]) array() []T {
-// 	mut a := []T{len: int(q.n)}
-// 	for i := 0; i < q.n; i++ {
-// 		a[i] = q.data[(q.j + i) % q.data.len]
-// 	}
-// 	return a
-// }
+@[direct_array_access]
+pub fn (q &Deque[T]) array() []T {
+	len := q.len()
+	mut a := []T{len: len}
+	for i in 0 .. len {
+		a[i] = q.data[(q.head + i) & (q.data.len - 1)]
+	}
+	return a
+}
 
-// pub fn (q &Deque[T]) str() string {
-// 	if q.n <= dq.max_str_elements + 5 {
-// 		return q.array().str()
-// 	}
-// 	len := dq.max_str_elements / 2
-// 	mut head := []T{len: len}
-// 	mut tail := []T{len: len}
-// 	for i := 0; i < len; i++ {
-// 		head[i] = q.data[(q.j + i) % q.data.len]
-// 	}
-// 	for i := q.n - len; i < q.n; i++ {
-// 		tail[i] = q.data[(q.j + i) % q.data.len]
-// 	}
-// 	head_str := head.str()
-// 	tail_str := tail.str()
-// 	return '${head_str[..head_str.len - 1]}, ..., ..., ...,\n${tail_str[1..]}'
-// }
+pub fn (q &Deque[T]) str() string {
+	q_len := q.len()
+	if q_len <= dq.max_str_elements + 5 {
+		return q.array().str()
+	}
+	len := dq.max_str_elements / 2
+	mut head := []T{len: len}
+	mut tail := []T{len: len}
+	for i in 0 .. len {
+		head[i] = q.data[(q.head + i) & (q.data.len - 1)]
+	}
+	for i in 0 .. len {
+		tail[i] = q.data[(q.head + q_len - len + i) & (q.data.len - 1)]
+	}
+	head_str := head.str()
+	tail_str := tail.str()
+	return '${head_str[..head_str.len - 1]},\n... ${q_len - dq.max_str_elements} other elements ...,\n${tail_str[1..]}'
+}
 
 @[direct_array_access]
 fn (mut q Deque[T]) resize(scale Scale) {
@@ -200,91 +205,49 @@ fn (mut q Deque[T]) resize(scale Scale) {
 			if q.data.len == dq.max_deque_size {
 				panic('dq.resize(): deque exceeded the maximum allowed size of ${dq.max_deque_size - 1}')
 			}
-			p := q.head
-			n := q.data.len
-			r := n - p
 
-			new_cap := n * 2
+			tail_len := q.tail
+			data_len := q.data.len
+			head_len := data_len - tail_len
+
+			new_cap := data_len * 2
 			mut new_arr := []T{len: new_cap}
 
-			for i in 0 .. r {
-				new_arr[i] = q.data[p + i]
+			for i in 0 .. head_len {
+				new_arr[i] = q.data[tail_len + i]
 			}
-			for i in 0 .. p {
-				new_arr[r + i] = q.data[i]
+			for i in 0 .. tail_len {
+				new_arr[head_len + i] = q.data[i]
 			}
 
 			q.data = new_arr
 			q.head = 0
-			q.tail = n
+			q.tail = data_len
 		}
 		.down {
-			h := q.head
-			mut p := q.tail
-			n := q.data.len
-			mut r := n - h
-			l := q.len()
-			if r > l {
-				r = l
-				p = 0
+			head_pos := q.head
+			data_len := q.data.len
+			deque_len := q.len()
+			mut tail_len := q.tail
+			mut head_len := data_len - head_pos
+			if head_len > deque_len {
+				head_len = deque_len
+				tail_len = 0
 			}
 
 			new_cap := q.data.len / 2
 			mut new_arr := []T{len: new_cap}
 
-			for i in 0 .. r {
-				new_arr[i] = q.data[h + i]
+			for i in 0 .. head_len {
+				new_arr[i] = q.data[head_pos + i]
 			}
-			for i in 0 .. p {
-				new_arr[r + i] = q.data[i]
+			for i in 0 .. tail_len {
+				new_arr[head_len + i] = q.data[i]
 			}
 
 			q.data = new_arr
 			q.head = 0
-			q.tail = l
+			q.tail = deque_len
 		}
 	}
 }
-
-// @[direct_array_access]
-// fn (mut q Deque[T]) resize[T](scale Scale) {
-// 	mut size := i64(0)
-// 	match scale {
-// 		.up {
-// 			if q.data.len == max_i32 {
-// 				panic('dq.resize(): queue exceeded max V array size of max_i32 = ${max_i32}')
-// 			}
-// 			size = i64(q.data.len) * 2
-// 			if size > max_i32 {
-// 				size = max_i32
-// 			}
-// 		}
-// 		.down {
-// 			if q.data.len == max_i32 {
-// 				size = max_i32 / 2 + 1
-// 			} else {
-// 				size = q.data.len / 2
-// 				if size < q.min {
-// 					size = q.min
-// 				}
-// 			}
-// 		}
-// 	}
-// 	mut a := []T{len: int(size)}
-// 	unsafe {
-// 		len1 := q.data.len - q.j
-// 		len2 := q.j + q.n - q.data.len
-// 		if len1 > q.n {
-// 			len1 = q.n
-// 			len2 = 0
-// 		}
-// 		vmemcpy(&a[0], &q.data[q.j], isize(len1) * q.data.element_size)
-// 		vmemcpy(&a[len1], &q.data[0], isize(len2) * q.data.element_size)
-// 	}
-// 	// unsafe block above does the following:
-// 	// for i := 0; i < q.n; i++ {
-// 	// 	a[i] = q.data[(q.j + i) % q.data.len]
-// 	// }
-// 	q.data = a
-// 	q.j = 0
-// }
