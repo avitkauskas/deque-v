@@ -1,6 +1,4 @@
 # Binaries for programs and plugins
-full
-rand
 *.exe
 *.exe~
 *.so
