@@ -7,16 +7,16 @@ Ignoring the cost of internal resize actions, it supports **O(1)** time operatio
 ## Installation
 
 ```shell
-v install avitkauskas.dq
+v install avitkauskas.deque
 ```
 
 ## Usage
 
 Default initialization:
 ```v
-import avitkauskas.dq
+import avitkauskas.deque
 
-mut q := dq.new[int]()
+mut q := deque.new[int]()
 ```
 
 Definitions of supported functions:
@@ -112,24 +112,24 @@ And it automatically shrinks in half when the number of elements in the queue be
 
 If you know that the size of your queue will grow to the certain number and should stay there for the most of the time, dropping to lower numbers just occasionally, you can provide the `min:` parameter and `new[int]()` will allocate memory for this number of elements at the time of initialization and will never shrink below it (but will grow as needed and will shrink to the `min` size if the number of elements will become less than `min/2`):
 ```
-mut q := dq.new[int](min: 100_000)
+mut q := deque.new[int](min: 100_000)
 ```
 Avoiding resizing (re-allocations of the underlying array and copying of the elements of the queue to the new location) you can gain a lot of speed at the expense of the higher memory usage.
 
 If you do not know the max size of your queue in advance, but you still want to be as quick as possible - you can tell deque not to shrink at any time. Then the queue will grow as needed but will never shrink.
 ```v
-mut q := dq.new[int](shrink: false)
+mut q := deque.new[int](shrink: false)
 ```
 
 You can combine these two parameters together, if needed:
 ```v
-mut q := dq.new[int](min: 100_000, shrink: false)
+mut q := deque.new[int](min: 100_000, shrink: false)
 ```
 This will initially allocate space for the `min` number of elements, will grow as needed, but will never shrink.
 
 And finally, you can provide the `max:` parameter if you want your queue to be as big as that, but never bigger. In that case, if you have `max` elements in the queue already, and any new element is pushed to the front or the back of the queue, one element from the other end is automaticaly popped and lost.
 ```v
-mut q := dq.new[int](max: 100_000)
+mut q := deque.new[int](max: 100_000)
 ```
 
 ## Limitations
