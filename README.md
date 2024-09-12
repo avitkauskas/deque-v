@@ -7,14 +7,14 @@ Ignoring the cost of internal resize actions, it supports **O(1)** time operatio
 ## Installation
 
 ```shell
-v install avitkauskas.dq
+v install av.dq
 ```
 
 ## Usage
 
 Default initialization:
 ```v
-import avitkauskas.dq
+import av.dq
 
 mut q := dq.deque[int]()
 ```
