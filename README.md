@@ -1,20 +1,20 @@
 # Quick double-ended queue (deque) for V
 
-This is a V module implementing **deque** as a circular automatically growing & shinking buffer based on generic dynamic V array `[]T`.
+This is a V module implementing **deque** as a circular automatically growing & shrinking buffer based on generic dynamic V array `[]T`.
 
 Ignoring the cost of internal resize actions, it supports **O(1)** time operations of **push** and **pop** at both ends of the queue as well as direct access to any element to **get** or **set** it. Any sequence of *m* *push* and *pop* operations results in a total of *O(m)* time spent during all calls to resize.
 
 ## Installation
 
 ```shell
-v install av.dq
+v install avitkauskas.dq
 ```
 
 ## Usage
 
 Default initialization:
 ```v
-import av.dq
+import avitkauskas.dq
 
 mut q := dq.deque[int]()
 ```
