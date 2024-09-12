@@ -1,7 +1,7 @@
-module dq
+module deque
 
-fn test_deque() {
-	mut q := deque[int]()
+fn test_deque_new() {
+	mut q := new[int]()
 	assert q.data.len == 64
 	assert q.min == 64
 	assert q.max == -1
@@ -9,41 +9,41 @@ fn test_deque() {
 	assert q.tail == 0
 	assert q.shrink == true
 
-	q = deque[int](min: 100)
+	q = new[int](min: 100)
 	assert q.data.len == 128
 	assert q.min == 128
 	assert q.max == -1
 
-	q = deque[int](max: 100)
+	q = new[int](max: 100)
 	assert q.data.len == 64
 	assert q.min == 64
 	assert q.max == 100
 
-	q = deque[int](min: 100, max: 200)
+	q = new[int](min: 100, max: 200)
 	assert q.data.len == 128
 	assert q.min == 128
 	assert q.max == 200
 
-	q = deque[int](min: -200, max: -100)
+	q = new[int](min: -200, max: -100)
 	assert q.data.len == 64
 	assert q.min == 64
 	assert q.max == -1
 
-	q = deque[int](min: 200, max: 100)
+	q = new[int](min: 200, max: 100)
 	assert q.data.len == 128
 	assert q.min == 128
 	assert q.max == 100
 
-	q = deque[int](min: 2_000_000_000)
+	q = new[int](min: 2_000_000_000)
 	assert q.data.len == max_deque_size
 	assert q.min == max_deque_size
 
-	q = deque[int](shrink: false)
+	q = new[int](shrink: false)
 	assert q.shrink == false
 }
 
 fn test_len() {
-	mut q := deque[int]()
+	mut q := new[int]()
 	assert q.data.len == 64
 	assert q.len() == 0
 
@@ -57,25 +57,25 @@ fn test_len() {
 }
 
 fn test_max_len() {
-	mut q := deque[int]()
+	mut q := new[int]()
 	assert q.max_len() == -1
 
-	q = deque[int](max: 100)
+	q = new[int](max: 100)
 	assert q.max_len() == 100
 
-	q = deque[int](max: -100)
+	q = new[int](max: -100)
 	assert q.max_len() == -1
 }
 
 fn test_is_empty() {
-	mut q := deque[int]()
+	mut q := new[int]()
 	assert q.is_empty() == true
 	q.tail++
 	assert q.is_empty() == false
 }
 
 fn test_clear() {
-	mut q := deque[int]()
+	mut q := new[int]()
 	q.head = 1
 	q.tail = 2
 	q.clear()
@@ -84,7 +84,7 @@ fn test_clear() {
 }
 
 fn test_push_front() {
-	mut q := deque[int](min: 8)
+	mut q := new[int](min: 8)
 	assert q.data.len == 8
 	q.data = [1, 2, 3, 4, 5, 6, 0, 0]
 	q.head = 0
@@ -99,7 +99,7 @@ fn test_push_front() {
 	assert q.tail == 8
 	assert q.data[q.head] == 8
 
-	q = deque[int](min: 8, max: 8)
+	q = new[int](min: 8, max: 8)
 	assert q.data.len == 8
 	q.data = [1, 2, 3, 4, 5, 6, 7, 0]
 	q.head = 0
@@ -117,7 +117,7 @@ fn test_push_front() {
 }
 
 fn test_push_back() {
-	mut q := deque[int](min: 8)
+	mut q := new[int](min: 8)
 	assert q.data.len == 8
 	q.data = [0, 1, 2, 3, 4, 5, 6, 0]
 	q.head = 1
@@ -132,7 +132,7 @@ fn test_push_back() {
 	assert q.tail == 8
 	assert q.data[q.tail - 1] == 8
 
-	q = deque[int](min: 8, max: 8)
+	q = new[int](min: 8, max: 8)
 	assert q.data.len == 8
 	q.data = [1, 2, 3, 4, 5, 6, 7, 0]
 	q.head = 0
@@ -150,7 +150,7 @@ fn test_push_back() {
 }
 
 fn test_pop_front() {
-	mut q := deque[int](min: 4)
+	mut q := new[int](min: 4)
 	assert q.pop_front() == none
 	q.data = [0, 1, 2, 3, 4, 0, 0, 0]
 	q.head = 1
@@ -167,7 +167,7 @@ fn test_pop_front() {
 }
 
 fn test_pop_back() {
-	mut q := deque[int](min: 4)
+	mut q := new[int](min: 4)
 	assert q.pop_back() == none
 	q.data = [0, 1, 2, 3, 4, 0, 0, 0]
 	q.head = 1
@@ -184,7 +184,7 @@ fn test_pop_back() {
 }
 
 fn test_front_and_back() {
-	mut q := deque[int](min: 4)
+	mut q := new[int](min: 4)
 	assert q.front() == none
 	assert q.back() == none
 	q.data = [0, 1, 2, 0]
@@ -195,7 +195,7 @@ fn test_front_and_back() {
 }
 
 fn test_get_and_set() {
-	mut q := deque[int](min: 4)
+	mut q := new[int](min: 4)
 	assert q.get(0) == none
 	assert q.get(-1) == none
 	q.data = [2, 0, 0, 1]
@@ -209,7 +209,7 @@ fn test_get_and_set() {
 }
 
 fn test_append() {
-	mut q := deque[int](min: 4)
+	mut q := new[int](min: 4)
 	q.append([1, 2, 3])
 	assert q.data == [1, 2, 3, 0]
 	assert q.head == 0
@@ -217,7 +217,7 @@ fn test_append() {
 }
 
 fn test_prepend() {
-	mut q := deque[int](min: 4)
+	mut q := new[int](min: 4)
 	q.prepend([1, 2, 3])
 	assert q.data == [0, 1, 2, 3]
 	assert q.head == 1
@@ -225,7 +225,7 @@ fn test_prepend() {
 }
 
 fn test_shrink() {
-	mut q := deque[int](min: 256)
+	mut q := new[int](min: 256)
 	q.head = 100
 	q.tail = 200
 	q.shrink()
@@ -233,7 +233,7 @@ fn test_shrink() {
 	assert q.head == 100
 	assert q.tail == 200
 
-	q = deque[int](min: 8)
+	q = new[int](min: 8)
 	q.data = [0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	assert q.data.len == 16
 	q.head = 2
@@ -245,7 +245,7 @@ fn test_shrink() {
 }
 
 fn test_array() {
-	mut q := deque[int](min: 8)
+	mut q := new[int](min: 8)
 	assert q.array() == []
 	q.data = [3, 4, 0, 0, 0, 0, 1, 2]
 	q.head = 6
@@ -254,7 +254,7 @@ fn test_array() {
 }
 
 fn test_str() {
-	mut q := deque[int]()
+	mut q := new[int]()
 	assert q.str() == '[]'
 	q.data = []int{len: 8, init: index}
 	q.tail = 6

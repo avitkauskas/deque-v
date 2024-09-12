@@ -1,4 +1,4 @@
-module dq
+module deque
 
 const default_deque_size = 64
 const max_deque_size = max_int / 2 + 1
@@ -22,22 +22,22 @@ mut:
 @[params]
 pub struct DequeParams {
 pub:
-	min    int  = dq.default_deque_size
+	min    int  = deque.default_deque_size
 	max    int  = -1
 	shrink bool = true
 }
 
-pub fn deque[T](params DequeParams) Deque[T] {
-	mut par_min := if params.min > dq.max_deque_size { dq.max_deque_size } else { params.min }
+pub fn new[T](params DequeParams) Deque[T] {
+	mut par_min := if params.min > deque.max_deque_size { deque.max_deque_size } else { params.min }
 	if par_min <= 0 {
-		par_min = dq.default_deque_size
+		par_min = deque.default_deque_size
 	}
 	mut cap := 1
 	for cap < par_min {
 		cap *= 2
 	}
 
-	mut par_max := if params.max > dq.max_deque_size { dq.max_deque_size } else { params.max }
+	mut par_max := if params.max > deque.max_deque_size { deque.max_deque_size } else { params.max }
 	if par_max > 0 {
 		mut max := 1
 		for max < par_max {
@@ -181,7 +181,7 @@ pub fn (q &Deque[T]) get(i int) ?T {
 @[direct_array_access]
 pub fn (mut q Deque[T]) set(i int, x T) ! {
 	if q.head == q.tail || i < 0 || i >= q.len() {
-		return error('dq.set(): set was attempted on an empty queue')
+		return error('deque.set(): set was attempted on an empty queue')
 	}
 	q.data[(q.head + i) & (q.data.len - 1)] = x
 }
@@ -230,10 +230,10 @@ pub fn (q &Deque[T]) array() []T {
 @[direct_array_access]
 pub fn (q &Deque[T]) str() string {
 	q_len := q.len()
-	if q_len <= dq.max_str_elements + 5 {
+	if q_len <= deque.max_str_elements + 5 {
 		return q.array().str()
 	}
-	len := dq.max_str_elements / 2
+	len := deque.max_str_elements / 2
 	mut head := []T{len: len}
 	mut tail := []T{len: len}
 	for i in 0 .. len {
@@ -244,15 +244,15 @@ pub fn (q &Deque[T]) str() string {
 	}
 	head_str := head.str()
 	tail_str := tail.str()
-	return '${head_str[..head_str.len - 1]},\n... ${q_len - dq.max_str_elements} other elements ...,\n${tail_str[1..]}'
+	return '${head_str[..head_str.len - 1]},\n... ${q_len - deque.max_str_elements} other elements ...,\n${tail_str[1..]}'
 }
 
 @[direct_array_access]
 fn (mut q Deque[T]) resize(scale Scale) {
 	match scale {
 		.up {
-			if q.data.len == dq.max_deque_size {
-				panic('dq.resize(): deque exceeded the maximum allowed size of ${dq.max_deque_size - 1}')
+			if q.data.len == deque.max_deque_size {
+				panic('deque.resize(): deque exceeded the maximum allowed size of ${deque.max_deque_size - 1}')
 			}
 
 			tail_len := q.tail
