@@ -22,22 +22,22 @@ mut:
 @[params]
 pub struct DequeParams {
 pub:
-	min    int  = deque.default_deque_size
+	min    int  = default_deque_size
 	max    int  = -1
 	shrink bool = true
 }
 
 pub fn new[T](params DequeParams) Deque[T] {
-	mut par_min := if params.min > deque.max_deque_size { deque.max_deque_size } else { params.min }
+	mut par_min := if params.min > max_deque_size { max_deque_size } else { params.min }
 	if par_min <= 0 {
-		par_min = deque.default_deque_size
+		par_min = default_deque_size
 	}
 	mut cap := 1
 	for cap < par_min {
 		cap *= 2
 	}
 
-	mut par_max := if params.max > deque.max_deque_size { deque.max_deque_size } else { params.max }
+	mut par_max := if params.max > max_deque_size { max_deque_size } else { params.max }
 	if par_max > 0 {
 		mut max := 1
 		for max < par_max {
@@ -230,10 +230,10 @@ pub fn (q &Deque[T]) array() []T {
 @[direct_array_access]
 pub fn (q &Deque[T]) str() string {
 	q_len := q.len()
-	if q_len <= deque.max_str_elements + 5 {
+	if q_len <= max_str_elements + 5 {
 		return q.array().str()
 	}
-	len := deque.max_str_elements / 2
+	len := max_str_elements / 2
 	mut head := []T{len: len}
 	mut tail := []T{len: len}
 	for i in 0 .. len {
@@ -244,21 +244,21 @@ pub fn (q &Deque[T]) str() string {
 	}
 	head_str := head.str()
 	tail_str := tail.str()
-	return '${head_str[..head_str.len - 1]},\n... ${q_len - deque.max_str_elements} other elements ...,\n${tail_str[1..]}'
+	return '${head_str[..head_str.len - 1]},\n... ${q_len - max_str_elements} other elements ...,\n${tail_str[1..]}'
 }
 
 @[direct_array_access]
 fn (mut q Deque[T]) resize(scale Scale) {
 	match scale {
 		.up {
-			if q.data.len == deque.max_deque_size {
-				panic('deque.resize(): deque exceeded the maximum allowed size of ${deque.max_deque_size - 1}')
+			if q.data.len == max_deque_size {
+				panic('deque.resize(): deque exceeded the maximum allowed size of ${max_deque_size - 1}')
 			}
 
 			tail_len := q.tail
 			head_len := q.data.len - tail_len
 
-			new_cap := q.data.len * 2
+			new_cap := q.data.len << 1
 			mut new_arr := []T{len: new_cap}
 
 			for i in 0 .. head_len {
@@ -281,7 +281,7 @@ fn (mut q Deque[T]) resize(scale Scale) {
 				tail_len = 0
 			}
 
-			new_cap := q.data.len / 2
+			new_cap := q.data.len >> 1
 			mut new_arr := []T{len: new_cap}
 
 			for i in 0 .. head_len {
