@@ -258,7 +258,7 @@ fn (mut q Deque[T]) resize(scale Scale) {
 			tail_len := q.tail
 			head_len := q.data.len - tail_len
 
-			new_cap := q.data.len << 1
+			new_cap := q.data.len * 2
 			mut new_arr := []T{len: new_cap}
 
 			for i in 0 .. head_len {
