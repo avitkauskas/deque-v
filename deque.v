@@ -124,7 +124,7 @@ pub fn (mut q Deque[T]) pop_front() ?T {
 	res := q.data[q.head]
 	q.head = (q.head + 1) & (q.data.len - 1)
 
-	if q.shrink && q.data.len > q.min && q.data.len >= i64(4) * q.len() {
+	if q.shrink && q.data.len > q.min && q.data.len / 4 >= q.len() {
 		q.resize(Scale.down)
 	}
 
@@ -139,7 +139,7 @@ pub fn (mut q Deque[T]) pop_back() ?T {
 	q.tail = (q.tail - 1) & (q.data.len - 1)
 	res := q.data[q.tail]
 
-	if q.shrink && q.data.len > q.min && q.data.len >= i64(4) * q.len() {
+	if q.shrink && q.data.len > q.min && q.data.len / 4 >= q.len() {
 		q.resize(Scale.down)
 	}
 
