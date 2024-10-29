@@ -78,7 +78,7 @@ pub fn (mut q Deque[T]) clear() {
 @[direct_array_access]
 pub fn (mut q Deque[T]) push_front(x T) {
 	if q.max > 0 && q.len() == q.max {
-		_ := q.pop_back() or { T{} }
+		q.pop_back() or { T{} }
 	}
 	q.head = (q.head - 1) & (q.data.len - 1)
 	q.data[q.head] = x
@@ -90,7 +90,7 @@ pub fn (mut q Deque[T]) push_front(x T) {
 @[direct_array_access]
 pub fn (mut q Deque[T]) push_back(x T) {
 	if q.max > 0 && q.len() == q.max {
-		_ := q.pop_front() or { T{} }
+		q.pop_front() or { T{} }
 	}
 	q.data[q.tail] = x
 	q.tail = (q.tail + 1) & (q.data.len - 1)
